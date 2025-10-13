@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 df = pd.read_csv("matches_1930_2022.csv")
 dfwc = pd.read_csv("world_cup.csv")
@@ -45,7 +46,23 @@ plt.ylabel("Games played on all WC")
 plt.title("Top 20 teams with most played games on WC")
 plt.tight_layout()
 plt.grid(True, axis = "y", linestyle = "--")
-plt.show()
+# plt.show()
+
+
+dfwc.rename(columns ={"champion": "gold", "runner-up": "silver"}, inplace = True)
+# gold_winner = dfwc["gold"].value_counts()
+# silver_winner = dfwc["silver"].value_counts()
+
+third_place_match_df = df[df["round" == "Third-place match"]]
+
+third_place = np.where(
+    third_place_match_df["home_score"] > third_place_match_df["away_score"],
+    third_place_match_df["home_score"],
+    third_place_match_df["away_score"]
+)
+
+
+
 
 
 
