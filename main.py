@@ -72,25 +72,27 @@ world_cup_full = pd.merge(
     how = "left",
     on = "year")
 
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
+gold_winners = world_cup_full["gold"].value_counts().rename("Gold")
+silver_winners = world_cup_full["silver"].value_counts().rename("Silver")
+bronze_winners = world_cup_full["bronze"].value_counts().rename("Bronze")
 
-gold_winners = world_cup_full["gold"].value_counts().rename("gold")
-silver_winners = world_cup_full["silver"].value_counts().rename("silver")
-bronze_winners = world_cup_full["bronze"].value_counts().rename("bronze")
-
-medalists_df = pd.concat([gold_winners, silver_winners, bronze_winners], axis=1)
+medalists_df = (pd.concat([gold_winners, silver_winners, bronze_winners], axis=1)).reset_index()
 medalists_df.fillna(0, inplace=True)
-print(f"\n{medalists_df}")
+# print(f"\n{medalists_df}")
+
+medalists_df = pd.melt(medalists_df, id_vars = ["index"], value_vars = ["Gold", "Silver", "Bronze"], var_name= "Medal", value_name = "Amount", ignore_index=False)
 
 ## visualization of all medalists
 
-# plt.figure(figsize=(12, 7))
-# sns.countplot(data = world_cup_full, x = "gold")
-# sns.countplot(data = world_cup_full, x = "silver")
-# sns.countplot(data = world_cup_full, x = "bronze")
-# plt.xticks(rotation=45, ha = "right")
-# plt.show()
+plt.figure(figsize=(12, 7))
+sns.barplot(data = medalists_df, x = "index", y = "Amount", hue = "Medal", palette = "Set3" )
+plt.xticks(rotation=45, ha = "right")
+plt.xlabel("Teams")
+plt.ylabel("Medals count")
+plt.title("All teams, which have medals")
+plt.tight_layout()
+plt.grid(True, axis = "y", linestyle = "--")
+plt.show()
 
 
 
