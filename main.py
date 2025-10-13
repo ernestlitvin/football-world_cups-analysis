@@ -3,19 +3,29 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 df = pd.read_csv("matches_1930_2022.csv")
-
-# df.info()
-
+dfwc = pd.read_csv("world_cup.csv")
 ### Preparing columns for data analysis : ###
-## 1.1 Making small letters: ##
+
+## 1.1 Making small letters of columns: ##
 df.columns = [col.lower() for col in df.columns]
-# df.info()
 
 ### 1.2. Deleting unnecessary columns ###
 cols = [3,4,6,7,8,9,10,11,13,14,18,19,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]
 df.drop(df.columns[cols], axis=1, inplace=True)
 
-## 1.3. Making "date" as DATE ##
+## 1.3. Making column "date" in DATE-format ##
+df["date"] = pd.to_datetime(df["date"])
 
+## 1.4 Checking duplicate columns ##
+print(f"Duplicates amount: {df.duplicated().sum()}")
+
+## Basic statistics: ##
+print(f"\n1st World Cup was in {df.year.min()}.\n The last World Cup was in {df.year.max()}.")
+print(f"\nMatches played on all WC: {dfwc.Matches.sum()}")
+
+home_team_played = df["home_team"].value_counts()
+away_team_played = df["away_team"].value_counts()
+team_played = home_team_played + away_team_played
+print(f"\nTeam played games on all WC: \n {team_played.sort_values(ascending=False)}")
 
 
