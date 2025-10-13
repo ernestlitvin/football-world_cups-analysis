@@ -22,11 +22,8 @@ df["date"] = pd.to_datetime(df["date"])
 ## 1.4 Checking duplicate columns ##
 print(f"Duplicates amount: {df.duplicated().sum()}")
 
-## 1.5 Rename West-Geremany to Germany
-df.rename(columns ={"champion": "gold", "runner-up": "silver"}, inplace = True)
-
-
-
+## 1.5 Renaming West-Geremany to Germany
+df.replace("West Germany", "Germany", inplace=True)
 
 ## Basic statistics: ##
 print(f"\n1st World Cup was in {df.year.min()}.\n The last World Cup was in {df.year.max()}.")
@@ -79,6 +76,9 @@ pd.set_option('display.max_rows', None)
 gold_winner = dfwc["gold"].value_counts()
 silver_winner = dfwc["silver"].value_counts()
 bronze_winner = world_cup_full["bronze"].value_counts()
+
+
+
 
 
 
