@@ -31,17 +31,22 @@ print(f"\nMatches played on all WC: {dfwc.matches.sum()}")
 home_team_played = df["home_team"].value_counts()
 away_team_played = df["away_team"].value_counts()
 team_played = (home_team_played + away_team_played).sort_values(ascending=False).dropna()
+top20_teams = team_played.head(20)
 
-plt.figure(figsize=(12, 6))
-sns.barplot(x=team_played.index, y=team_played.values, hue = team_played.index, palette = "Set2", legend = False)
-plt.xticks(rotation=45)
-plt.xlim(0,20)
+plt.figure(figsize=(12, 7))
+ax = sns.barplot(x=top20_teams.index, y=top20_teams.values, hue = top20_teams.index, palette = "Set2", legend = False)
+
+for container in ax.containers:
+    ax.bar_label(container, fontsize=10)
+
+plt.xticks(rotation=45, ha = "right")
 plt.xlabel("Teams")
 plt.ylabel("Games played on all WC")
 plt.title("Top 20 teams with most played games on WC")
 plt.tight_layout()
-plt.grid(True)
+plt.grid(True, axis = "y", linestyle = "--")
 plt.show()
+
 
 
 
