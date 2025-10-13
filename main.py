@@ -22,6 +22,10 @@ df["date"] = pd.to_datetime(df["date"])
 ## 1.4 Checking duplicate columns ##
 print(f"Duplicates amount: {df.duplicated().sum()}")
 
+## 1.5 Rename West-Geremany to Germany
+df.rename(columns ={"champion": "gold", "runner-up": "silver"}, inplace = True)
+
+
 
 
 ## Basic statistics: ##
@@ -50,18 +54,31 @@ plt.grid(True, axis = "y", linestyle = "--")
 
 
 dfwc.rename(columns ={"champion": "gold", "runner-up": "silver"}, inplace = True)
-# gold_winner = dfwc["gold"].value_counts()
-# silver_winner = dfwc["silver"].value_counts()
 
-third_place_match_df = df[df["round" == "Third-place match"]]
-
+third_place_matches = df[df["round"] == "Third-place match"]
 third_place = np.where(
-    third_place_match_df["home_score"] > third_place_match_df["away_score"],
-    third_place_match_df["home_score"],
-    third_place_match_df["away_score"]
+    third_place_matches["home_score"] > third_place_matches["away_score"],
+    third_place_matches["home_team"],
+    third_place_matches["away_team"]
 )
+third_place_year = third_place_matches["year"]
+third_place_df = pd.DataFrame({
+    "year": third_place_year,
+    "bronze": third_place
+})
 
+world_cup_full = pd.merge(
+    dfwc,
+    third_place_df,
+    how = "left",
+    on = "year")
 
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+
+gold_winner = dfwc["gold"].value_counts()
+silver_winner = dfwc["silver"].value_counts()
+bronze_winner = world_cup_full["bronze"].value_counts()
 
 
 
