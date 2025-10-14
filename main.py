@@ -75,6 +75,7 @@ world_cup_full = pd.merge(
     how = "left",
     on = "year")
 
+
 gold_winners = world_cup_full["gold"].value_counts().rename("Gold")
 silver_winners = world_cup_full["silver"].value_counts().rename("Silver")
 bronze_winners = world_cup_full["bronze"].value_counts().rename("Bronze")
@@ -130,36 +131,73 @@ df["total_goals"] = df["home_score"] + df["away_score"]
 avg_goals_per_year = df.groupby("year")["total_goals"].mean()
 avg_goals_df = avg_goals_per_year.reset_index()
 
-plt.figure(figsize=(10, 5))
-ax = sns.lineplot(data=avg_goals_df, x= "year", y = "total_goals")
-## making eras
-ax.axvspan(1930, 1978, color='green', alpha=0.1, label='13-16 teams')
-ax.axvspan(1982, 1994, color='blue', alpha=0.1, label='24 teams')
-ax.axvspan(1998, 2022, color='red', alpha=0.1, label='32 teams')
+# plt.figure(figsize=(10, 5))
+# ax = sns.lineplot(data=avg_goals_df, x= "year", y = "total_goals")
+# ## making eras
+# ax.axvspan(1930, 1978, color='green', alpha=0.1, label='13-16 teams')
+# ax.axvspan(1982, 1994, color='blue', alpha=0.1, label='24 teams')
+# ax.axvspan(1998, 2022, color='red', alpha=0.1, label='32 teams')
+#
+# for index, row in avg_goals_df.iterrows():
+#     label = f"{row['total_goals']:.2f}"
+#     ax.text(
+#         row['year'],
+#         row['total_goals'],
+#         label,
+#         ha='center',
+#         va='bottom',
+#         fontsize=9,
+#         zorder=10
+#     )
+#
+# min_year = df["year"].min()
+# max_year = df["year"].max()
+# plt.xticks(np.arange(min_year,max_year + 4,4), rotation=30, ha = "right")
 
-for index, row in avg_goals_df.iterrows():
-    label = f"{row['total_goals']:.2f}"
-    ax.text(
-        row['year'],
-        row['total_goals'],
-        label,
-        ha='center',
-        va='bottom',
-        fontsize=9,
-        zorder=10
-    )
+# plt.xlabel("Year")
+# plt.ylabel("Average goals")
+# plt.title("Average goals per year")
+# plt.grid(True, axis = "y", linestyle = "--")
+# plt.legend()
+# plt.tight_layout()
+# plt.show()
 
-min_year = df["year"].min()
-max_year = df["year"].max()
-plt.xticks(np.arange(min_year,max_year + 4,4), rotation=30, ha = "right")
+# I wouldn’t say that goals amount decreased. over time.
+# Of course, in the general picture - you can see that the number of heads has decreased:
+# From the beginning of the FIFA World Cup 1930 until 1958, the average number of goals was in the range of 3.6 - 5.38, and from 1962 to 2022 in the range of 2.21 - 2.97.
+# But, we must also look at the periods when the number of teams was different:
+# With 13-16 teams - the number of goals dropped noticeably (1930-1962). The teams became more defensive.
+# With 24 teams - 1982 until 1990 the average number of goals fell to the lowest point. But then it became higher.
+# With 32 teams - from 1998 to 2010 the average number of goals decreased by a little, but from 2014 to 2022 - is about the same level.
+# Anomalous goals amount were the year 1954. Extremely low goals were 1990
+# I would say that at the very beginning of an era, people definitely played more attack style (or were worse in defense ?: )) 
+# But then, over time, it seems to me that the number of goals is about the same. I mean - my hypothesis was not confirmed.
 
-plt.xlabel("Year")
-plt.ylabel("Average goals")
-plt.title("Average goals per year")
-plt.grid(True, axis = "y", linestyle = "--")
-plt.legend()
-plt.tight_layout()
-plt.show()
+## H2 A: The finalists (1-3 places) averagely score more goals per game than 'other' teams.
+## H3 B: The finalists (1-3 places) averagely conceded less goals per game than "other" teams.
+
+## creating a medalist team list
+medalist_teams = medalists_df["index"].tolist()
+
+
+## sorting and creating new df with home team statistic and away team statistic
+df_home = df[["year","home_team","home_score", "away_score"]]
+df_home = df_home.rename(columns = {
+    "home_team": "team",
+    "home_score": "goals_score",
+    "away_score": "goals_conceded"
+})
+
+df_away = df[["year","away_team","away_score", "home_score"]]
+df_away = df_away.rename(columns = {
+    "away_team": "team",
+    "away_score": "goals_score",
+    "home_score": "goals_conceded"
+})
+all_games_df = pd.concat([df_home, df_away])
+
+## grouping all teams games
+all_games_df_grouped = all_games_df.groupby("team")[["goals_score", "goals_conceded"]].mean()
 
 
 
