@@ -1,3 +1,5 @@
+from os.path import defpath
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -105,17 +107,43 @@ medalists_df = pd.melt(medalists_df, id_vars = ["index"], value_vars = ["Gold", 
 dfwc_sorted = dfwc.sort_values(by="year")
 dfwc_sorted["host_year"] = dfwc_sorted["host"] + " " + dfwc_sorted["year"].astype(str)
 
+# plt.figure(figsize=(10, 5))
+# sns.lineplot(data = dfwc_sorted, x = dfwc_sorted["host_year"], y = dfwc_sorted["attendanceavg"], color = "red")
+# plt.xticks(rotation=30, ha = "right")
+# plt.yticks(np.arange(0, dfwc_sorted['attendanceavg'].max() + 5000, 5000))
+# plt.xlabel("Host and year")
+# plt.ylabel("Average attendance")
+# plt.title("All countries, which were host of WC")
+# plt.tight_layout()
+# plt.grid(True, axis = "y", linestyle = "--")
+# plt.show()
+
+## Concept 1: Evolution of football in time
+# I assume that the game style has changed, become more pragmatic and defensive.
+# H1 : The average number of goals per game at the World Cup is decreasing over time (years).
+#     * Group all matches by year (Year).
+#     * For each year we calculate the average number of goals per game.
+#     * Plot a line to see the trend.
+
+df["total_goals"] = df["home_score"] + df["away_score"]
+
+avg_goals_per_year = df.groupby("year")["total_goals"].mean()
+# print(avg_goals_per_year)
+
 plt.figure(figsize=(10, 5))
-sns.lineplot(data = dfwc_sorted, x = dfwc_sorted["host_year"], y = dfwc_sorted["attendanceavg"], color = "red")
+bx = sns.barplot(x= avg_goals_per_year.index, y = avg_goals_per_year.values)
+
+for container in bx.containers:
+    bx.bar_label(container, fontsize=10, round(avg_goals_per_year.values, 2))
 plt.xticks(rotation=30, ha = "right")
-plt.xlabel("Host and year")
-plt.ylabel("Average attendance")
-plt.title("All countries, which were host of WC")
-plt.tight_layout()
-plt.grid(True, axis = "y", linestyle = "--")
+plt.xlabel("Year")
+plt.ylabel("Average goals")
+plt.title("Average goals per year")
+# plt.tight_layout()
+# plt.grid(True, axis = "y", linestyle = "--")
 plt.show()
 
-
+## поделить года на части, сколько было команд на турнире
 
 
 
