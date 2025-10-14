@@ -203,6 +203,7 @@ merged_df = pd.merge(
     on = ["year", "team"],
     how = "left")
 
+all_games_df["is_medalist"] = merged_df["medal_type"].notna()
 
 
 
