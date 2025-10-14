@@ -86,6 +86,7 @@ medalists_df.fillna(0, inplace=True)
 
 medalists_df = pd.melt(medalists_df, id_vars = ["index"], value_vars = ["Gold", "Silver", "Bronze"], var_name= "Medal", value_name = "Amount", ignore_index=False)
 
+
 ## visualization of all medalists (count)
 
 # plt.figure(figsize=(12, 7))
@@ -176,6 +177,47 @@ avg_goals_df = avg_goals_per_year.reset_index()
 ## H2 A: The finalists (1-3 places) averagely score more goals per game than 'other' teams.
 ## H3 B: The finalists (1-3 places) averagely conceded less goals per game than "other" teams.
 
+## creating medalists list
+yearly_medalist_team = pd.melt(world_cup_full, id_vars = ["year"], value_vars = ["gold", "silver", "bronze"], var_name = "medal_type", value_name = "team")
+yearly_medalist_team.dropna(inplace=True)
+
+## sorting and creating new df with home team statistic and away team statistic
+df_home = df[["year","home_team","home_score", "away_score"]]
+df_home = df_home.rename(columns = {
+    "home_team": "team",
+    "home_score": "goals_score",
+    "away_score": "goals_conceded"
+})
+
+df_away = df[["year","away_team","away_score", "home_score"]]
+df_away = df_away.rename(columns = {
+    "away_team": "team",
+    "away_score": "goals_score",
+    "home_score": "goals_conceded"
+})
+all_games_df = pd.concat([df_home, df_away])
+
+merged_df = pd.merge(
+    all_games_df,
+    yearly_medalist_team,
+    on = ["year", "team"],
+    how = "left")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## creating a medalist team list
 medalist_teams = medalists_df["index"].tolist()
 
@@ -196,9 +238,7 @@ df_away = df_away.rename(columns = {
 })
 all_games_df = pd.concat([df_home, df_away])
 
-## grouping all teams games
-all_games_df_grouped = all_games_df.groupby("team")[["goals_score", "goals_conceded"]].mean()
 
-d
+
 
 
