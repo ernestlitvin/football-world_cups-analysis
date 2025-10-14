@@ -185,14 +185,14 @@ yearly_medalist_team.dropna(inplace=True)
 df_home = df[["year","home_team","home_score", "away_score"]]
 df_home = df_home.rename(columns = {
     "home_team": "team",
-    "home_score": "goals_score",
+    "home_score": "goals_scored",
     "away_score": "goals_conceded"
 })
 
 df_away = df[["year","away_team","away_score", "home_score"]]
 df_away = df_away.rename(columns = {
     "away_team": "team",
-    "away_score": "goals_score",
+    "away_score": "goals_scored",
     "home_score": "goals_conceded"
 })
 all_games_df = pd.concat([df_home, df_away])
@@ -203,8 +203,18 @@ merged_df = pd.merge(
     on = ["year", "team"],
     how = "left")
 
-all_games_df["is_medalist"] = merged_df["medal_type"].notna()
+merged_df["is_medalist"] = merged_df["medal_type"].notna()
+# alternative
+# merged_df['is_medalist'] = np.where(
+#     merged_df['medal_type'].isnull(),
+#     False,
+#     True
 
+
+## grouping the results
+
+grouped_all_games = merged_df.groupby(["year","is_medalist"]).mean(["goals_scored", "goals_conceded"])
+print(grouped_all_games)
 
 
 
