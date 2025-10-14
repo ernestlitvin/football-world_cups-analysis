@@ -24,6 +24,7 @@ print(f"Duplicates amount: {df.duplicated().sum()}")
 
 ## 1.5 Renaming West-Geremany to Germany
 df.replace("West Germany", "Germany", inplace=True)
+dfwc.replace("West Germany", "Germany", inplace=True)
 
 ## Basic statistics: ##
 print(f"\n1st World Cup was in {df.year.min()}.\n The last World Cup was in {df.year.max()}.")
@@ -82,19 +83,24 @@ medalists_df.fillna(0, inplace=True)
 
 medalists_df = pd.melt(medalists_df, id_vars = ["index"], value_vars = ["Gold", "Silver", "Bronze"], var_name= "Medal", value_name = "Amount", ignore_index=False)
 
-## visualization of all medalists
+## visualization of all medalists (count)
 
-plt.figure(figsize=(12, 7))
-sns.barplot(data = medalists_df, x = "index", y = "Amount", hue = "Medal", palette = "Set3" )
-plt.xticks(rotation=45, ha = "right")
-plt.xlabel("Teams")
-plt.ylabel("Medals count")
-plt.title("All teams, which have medals")
-plt.tight_layout()
-plt.grid(True, axis = "y", linestyle = "--")
-plt.show()
+# plt.figure(figsize=(12, 7))
+# medal_colors = {
+#     "Gold": "#FFD700",
+#     "Silver": "#C0C0C0",
+#     "Bronze": "#CD7F32"}
+# sns.barplot(data = medalists_df, x = "index", y = "Amount", hue = "Medal", palette = medal_colors )
+# plt.xticks(rotation=45, ha = "right")
+# plt.xlabel("Teams")
+# plt.ylabel("Medals count")
+# plt.title("All teams, which have medals")
+# plt.tight_layout()
+# plt.grid(True, axis = "y", linestyle = "--")
+# plt.show()
 
 
+## AVG attendance on WC ###
 
 
 
