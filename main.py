@@ -102,6 +102,19 @@ medalists_df = pd.melt(medalists_df, id_vars = ["index"], value_vars = ["Gold", 
 
 ## AVG attendance on WC ###
 
+dfwc_sorted = dfwc.sort_values(by="year")
+dfwc_sorted["host_year"] = dfwc_sorted["host"] + " " + dfwc_sorted["year"].astype(str)
+
+plt.figure(figsize=(10, 5))
+sns.lineplot(data = dfwc_sorted, x = dfwc_sorted["host_year"], y = dfwc_sorted["attendanceavg"], color = "red")
+plt.xticks(rotation=30, ha = "right")
+plt.xlabel("Host and year")
+plt.ylabel("Average attendance")
+plt.title("All countries, which were host of WC")
+plt.tight_layout()
+plt.grid(True, axis = "y", linestyle = "--")
+plt.show()
+
 
 
 
