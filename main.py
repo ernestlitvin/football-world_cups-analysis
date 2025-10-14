@@ -128,22 +128,39 @@ dfwc_sorted["host_year"] = dfwc_sorted["host"] + " " + dfwc_sorted["year"].astyp
 df["total_goals"] = df["home_score"] + df["away_score"]
 
 avg_goals_per_year = df.groupby("year")["total_goals"].mean()
-# print(avg_goals_per_year)
+avg_goals_df = avg_goals_per_year.reset_index()
 
 plt.figure(figsize=(10, 5))
-bx = sns.barplot(x= avg_goals_per_year.index, y = avg_goals_per_year.values)
+ax = sns.lineplot(data=avg_goals_df, x= "year", y = "total_goals")
+## making eras
+ax.axvspan(1930, 1978, color='green', alpha=0.1, label='13-16 teams')
+ax.axvspan(1982, 1994, color='blue', alpha=0.1, label='24 teams')
+ax.axvspan(1998, 2022, color='red', alpha=0.1, label='32 teams')
 
-for container in bx.containers:
-    bx.bar_label(container, fontsize=10, round(avg_goals_per_year.values, 2))
-plt.xticks(rotation=30, ha = "right")
+for index, row in avg_goals_df.iterrows():
+    label = f"{row['total_goals']:.2f}"
+    ax.text(
+        row['year'],
+        row['total_goals'],
+        label,
+        ha='center',
+        va='bottom',
+        fontsize=9,
+        zorder=10
+    )
+
+min_year = df["year"].min()
+max_year = df["year"].max()
+plt.xticks(np.arange(min_year,max_year + 4,4), rotation=30, ha = "right")
+
 plt.xlabel("Year")
 plt.ylabel("Average goals")
 plt.title("Average goals per year")
-# plt.tight_layout()
-# plt.grid(True, axis = "y", linestyle = "--")
+plt.grid(True, axis = "y", linestyle = "--")
+plt.legend()
+plt.tight_layout()
 plt.show()
 
-## поделить года на части, сколько было команд на турнире
 
 
 
