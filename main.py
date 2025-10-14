@@ -199,6 +199,6 @@ all_games_df = pd.concat([df_home, df_away])
 ## grouping all teams games
 all_games_df_grouped = all_games_df.groupby("team")[["goals_score", "goals_conceded"]].mean()
 
-
+d
 
 
