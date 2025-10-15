@@ -216,7 +216,7 @@ merged_df["is_medalist"] = merged_df["medal_type"].notna()
 grouped_all_games = merged_df.groupby(["year","is_medalist"]).mean(["goals_scored", "goals_conceded"])
 print(grouped_all_games)
 
-## visual
+## visualization
 
 final_comparison_df = grouped_all_games.reset_index()
 
@@ -239,27 +239,22 @@ plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 
 plt.show()
 
+This project is about evolution of footbal and analysis of success factors on WC from 1930 to 2022.
 
+According data of all played matches I have checked two main hypotesis -
 
+H1: the game style has changed, become more pragmatic and defensive.
+The average number of goals per game at the World Cup was decreasing over time (years).
+Findout that there is no corelation between years and goals amount.
+At the very beginning of era, countries definitely played more attack style.
+But, over time, team started play more tacktical, respnsible and from 1962 teams were scoring mostly same amount of goals till now.
 
+H2.A: The finalists (1-3 places) averagely scored more goals per game than 'other' teams.
+Additionally, I have checked H3 B: The finalists (1-3 places) averagely conceded less goals per game than "other" teams.
+I can strongly confirm, that there is a huge differrence between medalists and other teams.
+Teams who scored more goals and conceded less goals most probably will be on pedistal.
 
-#
-# plt.xticks(np.arange(min_year,max_year + 4,4), ha = "right")
-# plt.xlabel("Year")
-# # plt.ylabel("Goals Scored")
-# plt.ylabel("Goals Conceded")
-# # plt.title("Average scored goals per year")
-# plt.title("Average conceded goals per year")
-# plt.grid(True, axis = "y", linestyle = "dotted")
-# # plt.legend()
-# plt.tight_layout()
-# plt.show()
-#
-#
-#
-
-
-
+Overall, the analysis showed that the football become more pragmatic, strategic, but on the other hand - if you want to fight for a medals - score more, concede less - and you have huge chances to be on a top.
 
 
 
