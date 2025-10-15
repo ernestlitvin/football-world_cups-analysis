@@ -100,7 +100,7 @@ medalists_df = pd.melt(medalists_df, id_vars = ["index"], value_vars = ["Gold", 
 # plt.ylabel("Medals count")
 # plt.title("All teams, which have medals")
 # plt.tight_layout()
-# plt.grid(True, axis = "y", linestyle = "--")
+# plt.grid(True, axis = "y", linestyle = "dashdot")
 # plt.show()
 
 
@@ -151,14 +151,14 @@ avg_goals_df = avg_goals_per_year.reset_index()
 #         zorder=10
 #     )
 #
-# min_year = df["year"].min()
-# max_year = df["year"].max()
+min_year = df["year"].min()
+max_year = df["year"].max()
 # plt.xticks(np.arange(min_year,max_year + 4,4), rotation=30, ha = "right")
 
 # plt.xlabel("Year")
 # plt.ylabel("Average goals")
 # plt.title("Average goals per year")
-# plt.grid(True, axis = "y", linestyle = "--")
+# plt.grid(True, axis = "y", linestyle = "dashed")
 # plt.legend()
 # plt.tight_layout()
 # plt.show()
@@ -216,6 +216,47 @@ merged_df["is_medalist"] = merged_df["medal_type"].notna()
 grouped_all_games = merged_df.groupby(["year","is_medalist"]).mean(["goals_scored", "goals_conceded"])
 print(grouped_all_games)
 
+## visual
+
+final_comparison_df = grouped_all_games.reset_index()
+
+fig, axes = plt.subplots(1,2,figsize=(18,7), sharey=True)
+
+sns.lineplot(data=final_comparison_df, x = "year", y = "goals_scored", hue = "is_medalist", palette = "Set1", ax = axes[0], marker = "o")
+axes[0].set_title("Average Goals Scored Per Game")
+axes[0].set_xlabel("Year")
+axes[0].set_ylabel("Average Goals")
+axes[0].grid(True,linestyle = "dotted")
+
+sns.lineplot(data=final_comparison_df, x = "year", y = "goals_conceded", hue = "is_medalist", palette = "Set2", ax = axes[1], marker = "o")
+axes[1].set_title("Average Goals Conceded Per Game")
+axes[1].set_xlabel("Year")
+axes[1].set_ylabel("")
+axes[1].grid(True,linestyle = "dotted")
+
+plt.suptitle("Champion\s Profile: Goals Scored vs Goals Conceded (Medalists vs Others)", fontsize = 16)
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+
+plt.show()
+
+
+
+
+
+#
+# plt.xticks(np.arange(min_year,max_year + 4,4), ha = "right")
+# plt.xlabel("Year")
+# # plt.ylabel("Goals Scored")
+# plt.ylabel("Goals Conceded")
+# # plt.title("Average scored goals per year")
+# plt.title("Average conceded goals per year")
+# plt.grid(True, axis = "y", linestyle = "dotted")
+# # plt.legend()
+# plt.tight_layout()
+# plt.show()
+#
+#
+#
 
 
 
@@ -226,28 +267,6 @@ print(grouped_all_games)
 
 
 
-
-
-
-## creating a medalist team list
-medalist_teams = medalists_df["index"].tolist()
-
-
-## sorting and creating new df with home team statistic and away team statistic
-df_home = df[["year","home_team","home_score", "away_score"]]
-df_home = df_home.rename(columns = {
-    "home_team": "team",
-    "home_score": "goals_score",
-    "away_score": "goals_conceded"
-})
-
-df_away = df[["year","away_team","away_score", "home_score"]]
-df_away = df_away.rename(columns = {
-    "away_team": "team",
-    "away_score": "goals_score",
-    "home_score": "goals_conceded"
-})
-all_games_df = pd.concat([df_home, df_away])
 
 
 
