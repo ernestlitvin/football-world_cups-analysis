@@ -69,7 +69,8 @@ plt.show()
 dfwc.rename(columns ={"champion": "gold", "runner-up": "silver"}, inplace = True)
 
 # Creating the list of "bronze" teams
-third_place_matches = df[df["round"] == "Third-place match"]
+third_place_round = "Third-place match"
+third_place_matches = df[df["round"] == "third_place_round"]
 third_place = np.where(
     third_place_matches["home_score"] > third_place_matches["away_score"],
     third_place_matches["home_team"],
@@ -101,7 +102,6 @@ medalists_df.fillna(0, inplace=True)
 medalists_df = pd.melt(medalists_df, id_vars = ["index"], value_vars = ["Gold", "Silver", "Bronze"], var_name= "Medal", value_name = "Amount", ignore_index=False)
 
 # Visualization of all WC medalists
-
 plt.figure(figsize=(12, 7))
 medal_colors = {
     "Gold": "#FFD700",
@@ -118,7 +118,6 @@ plt.show()
 
 # --- AVG attendance on all WC
 # Sorting values by year
-
 dfwc_sorted = dfwc.sort_values(by="year")
 
 # Creating new column of WC host and year
@@ -131,13 +130,13 @@ plt.xticks(rotation=30, ha = "right")
 plt.yticks(np.arange(0, dfwc_sorted['attendanceavg'].max() + 5000, 5000))
 plt.xlabel("Host and year")
 plt.ylabel("Average attendance")
-plt.title("All countries, which were host of WC")
+plt.title("All countries, which were host of WC and average attendance")
 plt.tight_layout()
 plt.grid(True, axis = "y", linestyle = "--")
 plt.show()
 
 # ==================================================================================
-# === 3.1. CHECKING THE HYPOTESIS ===
+# === 3.1. CHECKING THE HYPOTHESIS ===
 # ==================================================================================
 # --- Hypothesis 1: The average number of goals per game at the World Cup is decreasing over time? ---
 
@@ -178,53 +177,51 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
+# --- Hypothesis 2.1: The finalists (1-3 places) averagely score more goals per game than "other" teams ? ---
+# --- Hypothesis 2.2: The finalists (1-3 places) averagely conceded less goals per game than "other" teams ? ---
 
-## H2 A: The finalists (1-3 places) averagely score more goals per game than 'other' teams.
-## H3 B: The finalists (1-3 places) averagely conceded less goals per game than "other" teams.
-
-## creating medalists list
+# Creating all medalists list by year
 yearly_medalist_team = pd.melt(world_cup_full, id_vars = ["year"], value_vars = ["gold", "silver", "bronze"], var_name = "medal_type", value_name = "team")
 yearly_medalist_team.dropna(inplace=True)
 
-## sorting and creating new df with home team statistic and away team statistic
+# Sorting and creating new tables with "home team" statistic and "away team" statistic
 df_home = df[["year","home_team","home_score", "away_score"]]
 df_home = df_home.rename(columns = {
     "home_team": "team",
     "home_score": "goals_scored",
     "away_score": "goals_conceded"
 })
-
 df_away = df[["year","away_team","away_score", "home_score"]]
 df_away = df_away.rename(columns = {
     "away_team": "team",
     "away_score": "goals_scored",
     "home_score": "goals_conceded"
 })
+
+# Combing home and away tables
 all_games_df = pd.concat([df_home, df_away])
 
+# Merging yearly_medalist table with all_games table
 merged_df = pd.merge(
     all_games_df,
     yearly_medalist_team,
     on = ["year", "team"],
     how = "left")
 
+# Creating a new section (boolean type), which shows if a team is a medalist on WC
 merged_df["is_medalist"] = merged_df["medal_type"].notna()
+
 # alternative
 # merged_df['is_medalist'] = np.where(
 #     merged_df['medal_type'].isnull(),
 #     False,
 #     True
 
-
-## grouping the results
-
+# Grouping the results of merged_df
 grouped_all_games = merged_df.groupby(["year","is_medalist"]).mean(["goals_scored", "goals_conceded"])
-print(grouped_all_games)
 
-## visualization
-
+# Visualization of results
 final_comparison_df = grouped_all_games.reset_index()
-
 fig, axes = plt.subplots(1,2,figsize=(18,7), sharey=True)
 
 sns.lineplot(data=final_comparison_df, x = "year", y = "goals_scored", hue = "is_medalist", palette = "Set1", ax = axes[0], marker = "o")
@@ -239,36 +236,6 @@ axes[1].set_xlabel("Year")
 axes[1].set_ylabel("")
 axes[1].grid(True,linestyle = "dotted")
 
-plt.suptitle("Champion\s Profile: Goals Scored vs Goals Conceded (Medalists vs Others)", fontsize = 16)
+plt.suptitle("Champions Profile: Goals Scored vs Goals Conceded (Medalists vs Others)", fontsize = 16)
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-
 plt.show()
-
-This project is about evolution of footbal and analysis of success factors on WC from 1930 to 2022.
-
-According data of all played matches I have checked two main hypotesis -
-
-H1: the game style has changed, become more pragmatic and defensive.
-The average number of goals per game at the World Cup was decreasing over time (years).
-Findout that there is no corelation between years and goals amount.
-At the very beginning of era, countries definitely played more attack style.
-But, over time, team started play more tacktical, respnsible and from 1962 teams were scoring mostly same amount of goals till now.
-
-H2.A: The finalists (1-3 places) averagely scored more goals per game than 'other' teams.
-Additionally, I have checked H3 B: The finalists (1-3 places) averagely conceded less goals per game than "other" teams.
-I can strongly confirm, that there is a huge differrence between medalists and other teams.
-Teams who scored more goals and conceded less goals most probably will be on pedistal.
-
-Overall, the analysis showed that the football become more pragmatic, strategic, but on the other hand - if you want to fight for a medals - score more, concede less - and you have huge chances to be on a top.
-
-
-
-
-
-
-
-
-
-
-
-
